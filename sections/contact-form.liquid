@@ -1,0 +1,20 @@
+<div class="container container--narrow page">
+  {%- form 'contact', class: 'form-stack' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="form-success" role="status">Thank you — we'll be in touch shortly.</p>
+    {%- endif -%}
+    {{ form.errors | default_errors }}
+    <label>Name<input class="field" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}"></label>
+    <label>Email<input class="field" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"></label>
+    <label>Message<textarea class="field" name="contact[body]" required>{{ form.body }}</textarea></label>
+    <p><button class="btn" type="submit">Send</button></p>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": [],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

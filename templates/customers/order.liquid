@@ -1,0 +1,29 @@
+<div class="container account">
+  <header class="page-head">
+    <h1 class="heading-rule">Order {{ order.name }}</h1>
+    <p class="muted" style="margin-top: 16px">Placed {{ order.created_at | date: '%B %e, %Y' }}{% if order.cancelled %} · Cancelled{% endif %}</p>
+  </header>
+  <table>
+    <thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+    <tbody>
+      {%- for item in order.line_items -%}
+        <tr>
+          <td>{{ item.title }}{% if item.fulfillment %}<br><span class="small">Shipped {{ item.fulfillment.created_at | date: '%b %e' }}{% if item.fulfillment.tracking_url %} · <a href="{{ item.fulfillment.tracking_url }}">Track</a>{% endif %}</span>{% endif %}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.final_line_price | money }}</td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="2">Subtotal</td><td>{{ order.line_items_subtotal_price | money }}</td></tr>
+      {%- for line in order.shipping_methods -%}<tr><td colspan="2">Shipping ({{ line.title }})</td><td>{{ line.price | money }}</td></tr>{%- endfor -%}
+      {%- for line in order.tax_lines -%}<tr><td colspan="2">{{ line.title }}</td><td>{{ line.price | money }}</td></tr>{%- endfor -%}
+      <tr><th colspan="2">Total</th><th>{{ order.total_net_amount | money }}</th></tr>
+    </tfoot>
+  </table>
+  <div style="display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 48px">
+    <div><h2 class="eyebrow" style="margin-bottom: 12px">Shipping address</h2>{{ order.shipping_address | format_address }}</div>
+    <div><h2 class="eyebrow" style="margin-bottom: 12px">Billing address</h2>{{ order.billing_address | format_address }}</div>
+  </div>
+  <p style="margin-top: 48px"><a class="link" href="{{ routes.account_url }}">← Back to account</a></p>
+</div>

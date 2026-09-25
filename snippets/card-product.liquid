@@ -1,0 +1,43 @@
+{%- comment -%}
+  Product card. Renders a sample card when `product` is blank (theme editor / empty collection).
+  Subtitle: product metafield custom.subtitle, falling back to product type.
+{%- endcomment -%}
+{%- if product != blank -%}
+  <a class="card" href="{{ product.url }}">
+    <div class="card__media">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 50vw' }}
+        {%- if product.media[1] -%}
+          {{ product.media[1] | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 25vw, 50vw', alt: '' }}
+        {%- endif -%}
+      {%- else -%}
+        <img src="{{ 'enzo-bottle.jpg' | asset_url }}" width="1024" height="1024" loading="lazy" alt="">
+      {%- endif -%}
+      {%- unless product.available -%}
+        <span class="badge">Sold out</span>
+      {%- else -%}
+        {%- if product.compare_at_price > product.price -%}<span class="badge">Sale</span>{%- endif -%}
+      {%- endunless -%}
+    </div>
+    <h3 class="card__title">{{ product.title }}</h3>
+    {%- assign subtitle = product.metafields.custom.subtitle.value | default: product.type -%}
+    {%- if subtitle != blank -%}<p class="card__sub">{{ subtitle }}</p>{%- endif -%}
+    <p class="price">
+      {%- if product.price_varies -%}
+        {{ product.price_min | money }} – {{ product.price_max | money }}
+      {%- else -%}
+        {{ product.price | money }}
+        {%- if product.compare_at_price > product.price %}<s>{{ product.compare_at_price | money }}</s>{% endif -%}
+      {%- endif -%}
+    </p>
+  </a>
+{%- else -%}
+  <div class="card">
+    <div class="card__media">
+      <img src="{{ 'enzo-bottle.jpg' | asset_url }}" width="1024" height="1024" loading="lazy" alt="">
+    </div>
+    <h3 class="card__title">Scent Name</h3>
+    <p class="card__sub">Extrait de Parfum</p>
+    <p class="price">{{ 12000 | money }}</p>
+  </div>
+{%- endif -%}

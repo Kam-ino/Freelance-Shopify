@@ -1,0 +1,55 @@
+<div class="container">
+  <header class="page-head"><h1 class="heading-rule">Your bag</h1></header>
+
+  {%- if cart.item_count > 0 -%}
+    <form class="cart" action="{{ routes.cart_url }}" method="post">
+      <div>
+        {%- for item in cart.items -%}
+          <div class="line">
+            <a class="line__img" href="{{ item.url }}">
+              {%- if item.image -%}{{ item.image | image_url: width: 260 | image_tag: loading: 'lazy', alt: item.product.title }}{%- endif -%}
+            </a>
+            <div>
+              <a class="line__title" href="{{ item.url }}">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<p class="line__meta">{{ item.variant.title }}</p>{%- endunless -%}
+              {%- for p in item.properties -%}
+                {%- unless p.last == blank or p.first contains '_' -%}<p class="line__meta">{{ p.first }}: {{ p.last }}</p>{%- endunless -%}
+              {%- endfor -%}
+              <p class="line__meta">{{ item.final_price | money }}</p>
+              <label class="visually-hidden" for="Qty-{{ forloop.index }}">Quantity</label>
+              <input class="cart__qty" id="Qty-{{ forloop.index }}" type="number" name="updates[]" value="{{ item.quantity }}" min="0">
+              <a class="line__remove" href="{{ item.url_to_remove }}">Remove</a>
+            </div>
+            <p class="line__price">{{ item.final_line_price | money }}</p>
+          </div>
+        {%- endfor -%}
+        <button class="link" type="submit" name="update" style="margin-top: 24px; background: none; border-width: 0 0 1px; cursor: pointer">Update bag</button>
+      </div>
+
+      <aside class="cart__summary">
+        {%- render 'free-shipping' -%}
+        <p class="totals"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></p>
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <p class="small">{{ discount.title }} (−{{ discount.total_allocated_amount | money }})</p>
+        {%- endfor -%}
+        <p class="small">Taxes, discounts and shipping calculated at checkout.</p>
+        <button class="btn btn--full" type="submit" name="checkout">Checkout</button>
+        {%- if additional_checkout_buttons -%}
+          <div>{{ content_for_additional_checkout_buttons }}</div>
+        {%- endif -%}
+      </aside>
+    </form>
+  {%- else -%}
+    <div class="center section" style="padding-top: 0">
+      <p class="muted">Your bag is empty.</p>
+      <p style="margin-top: 32px"><a class="btn" href="{{ routes.all_products_collection_url }}">Discover the scents</a></p>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": []
+}
+{% endschema %}

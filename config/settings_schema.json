@@ -1,0 +1,42 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Enzo",
+    "theme_version": "1.0.0",
+    "theme_author": "Dominic S. Guevarra",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/manual/online-store/themes"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_ink", "label": "Ink (text, header, footer)", "default": "#121110" },
+      { "type": "color", "id": "color_ivory", "label": "Ivory (page background)", "default": "#FAF8F4" },
+      { "type": "color", "id": "color_cream", "label": "Cream (image frames, panels)", "default": "#F1ECE3" },
+      { "type": "color", "id": "color_gold", "label": "Gold (accent)", "default": "#C2A062" }
+    ]
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Header logo", "info": "Leave empty to use the ENZO SCENTS wordmark. Use a dark logo on a transparent background; it is inverted to white over the homepage hero." },
+      { "type": "range", "id": "logo_width", "label": "Header logo width", "min": 60, "max": 260, "step": 10, "unit": "px", "default": 160 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      { "type": "number", "id": "free_shipping_threshold", "label": "Free shipping threshold", "info": "In your store currency. Set to 0 to hide the progress bar.", "default": 150 }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" },
+      { "type": "text", "id": "social_x", "label": "X URL" }
+    ]
+  }
+]

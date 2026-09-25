@@ -1,0 +1,19 @@
+<article class="container container--narrow page">
+  <header class="page-head">
+    <p class="eyebrow muted">{{ article.published_at | date: '%B %e, %Y' }}</p>
+    <h1 class="display" style="margin-top: 16px; font-size: clamp(36px, 5vw, 64px)">{{ article.title }}</h1>
+  </header>
+  {%- if article.image -%}
+    <div class="article-img">{{ article.image | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 800px) 760px, 100vw' }}</div>
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+  <p style="margin-top: 56px"><a class="link" href="{{ blog.url }}">← Back to {{ blog.title }}</a></p>
+</article>
+<script type="application/ld+json">{{ article | structured_data }}</script>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": []
+}
+{% endschema %}

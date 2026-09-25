@@ -1,0 +1,136 @@
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign subtitle = product.metafields.custom.subtitle.value | default: product.type
+  assign tagline = product.metafields.custom.tagline.value | default: section.settings.tagline
+-%}
+<div class="container pdp" data-product>
+  <div class="pdp__gallery">
+    {%- for media in product.media -%}
+      <div class="pdp__media" id="media-{{ media.id }}">
+        {%- if media.media_type == 'image' -%}
+          {%- if forloop.first -%}
+            {{ media | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 55vw, 86vw', fetchpriority: 'high' }}
+          {%- else -%}
+            {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 900, 1200', sizes: '(min-width: 990px) 28vw, 86vw' }}
+          {%- endif -%}
+        {%- else -%}
+          {{ media | media_tag: image_size: '1200x' }}
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <div class="pdp__media"><img src="{{ 'enzo-bottle.jpg' | asset_url }}" width="1024" height="1024" alt=""></div>
+    {%- endfor -%}
+  </div>
+
+  <div class="pdp__info">
+    {%- if subtitle != blank -%}<p class="eyebrow pdp__eyebrow">{{ subtitle }}</p>{%- endif -%}
+    <h1 class="pdp__title">{{ product.title }}</h1>
+    {%- if tagline != blank -%}<p class="pdp__tagline">{{ tagline }}</p>{%- endif -%}
+    <p class="price" data-price>
+      {{- variant.price | money -}}
+      {%- if variant.compare_at_price > variant.price %} <s>{{ variant.compare_at_price | money }}</s>{% endif -%}
+    </p>
+
+    {%- unless product.has_only_default_variant -%}
+      <div data-variant-picker>
+        {%- for option in product.options_with_values -%}
+          {%- assign oi = forloop.index -%}
+          <fieldset class="opt">
+            <legend class="eyebrow">{{ option.name }}</legend>
+            <div class="opt__values">
+              {%- for value in option.values -%}
+                <input type="radio" id="opt-{{ section.id }}-{{ oi }}-{{ forloop.index }}" name="opt-{{ oi }}" value="{{ value | escape }}" {% if value.selected %}checked{% endif %}>
+                <label for="opt-{{ section.id }}-{{ oi }}-{{ forloop.index }}"{% unless value.available %} class="is-unavailable"{% endunless %}>{{ value }}</label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+      </div>
+      <script type="application/json" data-variants>
+        [
+        {%- for v in product.variants -%}
+          {%- liquid
+            assign compare = ''
+            if v.compare_at_price > v.price
+              assign compare = v.compare_at_price | money
+            endif
+          -%}
+          {"id":{{ v.id }},"options":{{ v.options | json }},"available":{{ v.available | json }},"price":{{ v.price | money | json }},"compare":{{ compare | json }}}
+          {%- unless forloop.last %},{% endunless -%}
+        {%- endfor -%}
+        ]
+      </script>
+    {%- endunless -%}
+
+    {%- form 'product', product, class: 'pdp__buy' -%}
+      <input type="hidden" name="id" value="{{ variant.id }}">
+      <button class="btn btn--full" type="submit" data-add data-label="Add to bag" {% unless variant.available %}disabled{% endunless %}>
+        {%- if variant.available %}Add to bag{% else %}Sold out{% endif -%}
+      </button>
+      {%- if section.settings.dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+      <p class="form-error" data-form-error role="alert" hidden></p>
+    {%- endform -%}
+
+    {%- assign trust_lines = section.settings.trust | newline_to_br | split: '<br />' -%}
+    {%- if section.settings.trust != blank -%}
+      <ul class="trust">
+        {%- for line in trust_lines -%}
+          {%- assign l = line | strip -%}
+          {%- if l != blank -%}<li>{{ l }}</li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- capture accordions -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'notes' -%}
+            <div {{ block.shopify_attributes }}>{% render 'scent-notes', product: product %}</div>
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <details {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                <summary>{{ block.settings.heading }}</summary>
+                <div class="accordion__body rte">{{ product.description }}</div>
+              </details>
+            {%- endif -%}
+          {%- when 'collapsible' -%}
+            <details {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.heading }}</summary>
+              <div class="accordion__body rte">{{ block.settings.content }}{{ block.settings.page.content }}</div>
+            </details>
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if accordions != blank -%}<div class="accordion">{{ accordions }}</div>{%- endif -%}
+  </div>
+</div>
+
+<script type="application/ld+json">{{ product | structured_data }}</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Default tagline", "info": "Overridden per product by the custom.tagline metafield.", "default": "98% fragrance oil · natural spray" },
+    { "type": "checkbox", "id": "dynamic_checkout", "label": "Show dynamic checkout buttons", "default": true },
+    { "type": "textarea", "id": "trust", "label": "Reassurance lines", "info": "One per line.", "default": "Complimentary shipping on orders over $150\nPresented in our signature black & gold box\nSecure checkout" }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "notes", "name": "Fragrance notes", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Reads product metafields custom.top_notes, custom.heart_notes and custom.base_notes." }
+    ] },
+    { "type": "description", "name": "Description", "limit": 1, "settings": [
+      { "type": "text", "id": "heading", "label": "Heading", "default": "The story" },
+      { "type": "checkbox", "id": "open", "label": "Open by default", "default": true }
+    ] },
+    { "type": "collapsible", "name": "Collapsible tab", "settings": [
+      { "type": "text", "id": "heading", "label": "Heading", "default": "Shipping & returns" },
+      { "type": "richtext", "id": "content", "label": "Content" },
+      { "type": "page", "id": "page", "label": "Content from page" }
+    ] }
+  ]
+}
+{% endschema %}

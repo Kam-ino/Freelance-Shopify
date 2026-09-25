@@ -1,0 +1,75 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <a class="footer__logo" href="{{ routes.root_url }}">
+          <img src="{{ 'enzo-logo.png' | asset_url }}" width="474" height="474" loading="lazy" alt="{{ shop.name }}">
+        </a>
+        {%- if section.settings.about != blank -%}<p class="footer__about">{{ section.settings.about }}</p>{%- endif -%}
+        <div class="footer__contact">
+          {%- if section.settings.email != blank -%}
+            <a href="mailto:{{ section.settings.email }}">{% render 'icon', name: 'mail' %}{{ section.settings.email }}</a>
+          {%- endif -%}
+          {%- if section.settings.whatsapp != blank -%}
+            <a href="https://wa.me/{{ section.settings.whatsapp | remove: '+' | remove: ' ' | remove: '-' }}">{% render 'icon', name: 'whatsapp' %}WhatsApp: {{ section.settings.whatsapp }}</a>
+          {%- endif -%}
+        </div>
+        <div class="socials">
+          {%- assign networks = 'instagram,tiktok,facebook,x' | split: ',' -%}
+          {%- for network in networks -%}
+            {%- assign key = 'social_' | append: network -%}
+            {%- if settings[key] != blank -%}
+              <a href="{{ settings[key] }}" target="_blank" rel="noopener" aria-label="{{ network | capitalize }}">{% render 'icon', name: network %}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- for n in (1..2) -%}
+        {%- assign menu_key = 'menu_' | append: n -%}
+        {%- assign menu = section.settings[menu_key] -%}
+        {%- if menu != blank -%}
+          <nav aria-label="{{ menu.title }}">
+            <h2>{{ menu.title }}</h2>
+            <ul>
+              {%- for link in menu.links -%}<li><a href="{{ link.url }}">{{ link.title }}</a></li>{%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.settings.policies -%}
+        <nav aria-label="Policies">
+          <h2>Customer care</h2>
+          <ul>
+            {%- for policy in shop.policies -%}<li><a href="{{ policy.url }}">{{ policy.title }}</a></li>{%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    <div class="footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      {%- if section.settings.payment_icons -%}
+        <ul class="payment-icons" aria-label="Payment methods">
+          {%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag }}</li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "about", "label": "About text", "default": "Fragrance oils at 98% concentration — composed to be worn close and remembered long." },
+    { "type": "text", "id": "email", "label": "Email" },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp number", "info": "International format, e.g. +1 555 123 4567" },
+    { "type": "link_list", "id": "menu_1", "label": "First menu", "default": "main-menu" },
+    { "type": "link_list", "id": "menu_2", "label": "Second menu", "default": "footer" },
+    { "type": "checkbox", "id": "policies", "label": "Show policy links", "default": true },
+    { "type": "checkbox", "id": "payment_icons", "label": "Show payment icons", "default": true }
+  ]
+}
+{% endschema %}

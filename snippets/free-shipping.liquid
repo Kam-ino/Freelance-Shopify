@@ -1,0 +1,14 @@
+{%- comment -%} ponytail: threshold is in shop currency; convert per market if multi-currency is enabled {%- endcomment -%}
+{%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+{%- if threshold > 0 and cart.item_count > 0 -%}
+  {%- assign remaining = threshold | minus: cart.total_price -%}
+  {%- assign pct = cart.total_price | times: 100 | divided_by: threshold | at_most: 100 -%}
+  <div class="ship">
+    {%- if remaining > 0 -%}
+      You're {{ remaining | money }} away from complimentary shipping
+    {%- else -%}
+      Your order ships complimentary
+    {%- endif -%}
+    <div class="ship__bar" aria-hidden="true"><span style="width: {{ pct }}%"></span></div>
+  </div>
+{%- endif -%}

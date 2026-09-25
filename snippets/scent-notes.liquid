@@ -1,0 +1,16 @@
+{%- comment -%}
+  Olfactory pyramid. Reads product metafields custom.top_notes / heart_notes / base_notes
+  (single-line text or list of single-line text). Pass top/heart/base strings to override.
+{%- endcomment -%}
+{%- liquid
+  assign t = top | default: product.metafields.custom.top_notes.value | join: ', '
+  assign h = heart | default: product.metafields.custom.heart_notes.value | join: ', '
+  assign b = base | default: product.metafields.custom.base_notes.value | join: ', '
+-%}
+{%- if t != blank or h != blank or b != blank -%}
+  <dl class="notes">
+    {%- if t != blank -%}<div class="notes__row"><dt>Top</dt><dd>{{ t }}</dd></div>{%- endif -%}
+    {%- if h != blank -%}<div class="notes__row"><dt>Heart</dt><dd>{{ h }}</dd></div>{%- endif -%}
+    {%- if b != blank -%}<div class="notes__row"><dt>Base</dt><dd>{{ b }}</dd></div>{%- endif -%}
+  </dl>
+{%- endif -%}

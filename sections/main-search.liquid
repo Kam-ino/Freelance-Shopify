@@ -1,0 +1,44 @@
+<div class="container page">
+  <header class="page-head">
+    <h1 class="heading-rule">Search</h1>
+    <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="SearchPage">Search</label>
+      <input class="field" id="SearchPage" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search scents…">
+      <button class="btn" type="submit">Search</button>
+    </form>
+    {%- if search.performed -%}
+      <p class="muted" style="margin-top: 20px">{{ search.results_count }} {{ search.results_count | pluralize: 'result', 'results' }} for “{{ search.terms | escape }}”</p>
+    {%- endif -%}
+  </header>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 16 -%}
+      {%- assign products = search.results | where: 'object_type', 'product' -%}
+      {%- assign articles = search.results | where: 'object_type', 'article' -%}
+      {%- assign pages = search.results | where: 'object_type', 'page' -%}
+      {%- assign others = articles | concat: pages -%}
+      {%- if products.size > 0 -%}
+        <div class="grid">
+          {%- for product in products -%}{%- render 'card-product', product: product -%}{%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if others.size > 0 -%}
+        <div class="result-list">
+          {%- for item in others -%}
+            <a href="{{ item.url }}"><h3>{{ item.title }}</h3><p class="muted">{{ item.content | strip_html | truncatewords: 24 }}</p></a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">{{ paginate | default_pagination: next: 'Next →', previous: '← Previous' }}</nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": []
+}
+{% endschema %}

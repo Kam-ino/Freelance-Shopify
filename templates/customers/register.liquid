@@ -1,0 +1,11 @@
+<div class="container container--narrow account">
+  <header class="page-head"><h1 class="heading-rule">Create account</h1></header>
+  {%- form 'create_customer', class: 'form-stack' -%}
+    {{ form.errors | default_errors }}
+    <label>First name<input class="field" type="text" name="customer[first_name]" autocomplete="given-name"></label>
+    <label>Last name<input class="field" type="text" name="customer[last_name]" autocomplete="family-name"></label>
+    <label>Email<input class="field" type="email" name="customer[email]" autocomplete="email" required></label>
+    <label>Password<input class="field" type="password" name="customer[password]" autocomplete="new-password" required></label>
+    <p><button class="btn" type="submit">Create account</button></p>
+  {%- endform -%}
+</div>

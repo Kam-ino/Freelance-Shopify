@@ -1,0 +1,65 @@
+{%- comment -%}
+  One scent, told like a label: bottle on cream, notes on black.
+  Notes come from the product's custom.top_notes / heart_notes / base_notes metafields;
+  the section's note fields are used when the product has none (or no product is picked).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign product = s.product
+  assign variant = product.selected_or_first_available_variant
+  assign top = product.metafields.custom.top_notes.value | join: ', ' | default: s.top
+  assign heart = product.metafields.custom.heart_notes.value | join: ', ' | default: s.heart
+  assign base = product.metafields.custom.base_notes.value | join: ', ' | default: s.base
+-%}
+<section class="spotlight">
+  <div class="spotlight__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+    {%- else -%}
+      <img src="{{ 'enzo-bottle.jpg' | asset_url }}" width="1024" height="1024" loading="lazy" alt="">
+    {%- endif -%}
+  </div>
+
+  <div class="spotlight__body label-frame">
+    <p class="eyebrow">{{ s.eyebrow }}</p>
+    <h2 class="spotlight__title">{{ product.title | default: s.fallback_title }}</h2>
+    {%- if s.claim != blank -%}<p class="spotlight__claim">{{ s.claim }}</p>{%- endif -%}
+    {%- render 'scent-notes', top: top, heart: heart, base: base -%}
+
+    <div class="spotlight__buy">
+      {%- if product != blank -%}
+        {%- form 'product', product -%}
+          <input type="hidden" name="id" value="{{ variant.id }}">
+          <button class="btn btn--gold" type="submit" {% unless variant.available %}disabled{% endunless %}>
+            {%- if variant.available -%}
+              Add to bag — {{ variant.price | money }}
+            {%- else -%}
+              Sold out
+            {%- endif -%}
+          </button>
+          <p class="form-error" data-form-error role="alert" hidden></p>
+        {%- endform -%}
+        <a class="link" href="{{ product.url }}">Discover{% unless product.has_only_default_variant %} all sizes{% endunless %}</a>
+      {%- else -%}
+        <a class="btn btn--gold" href="{{ routes.all_products_collection_url }}">Shop the collection</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Scent spotlight",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Anatomy of a scent" },
+    { "type": "text", "id": "fallback_title", "label": "Title (when no product is selected)", "default": "Scent Name" },
+    { "type": "text", "id": "claim", "label": "Claim", "default": "98% fragrance oil. Nothing to dilute it." },
+    { "type": "header", "content": "Fallback notes", "info": "Used when the product has no custom.top_notes / heart_notes / base_notes metafields." },
+    { "type": "text", "id": "top", "label": "Top notes", "default": "Bergamot, pink pepper" },
+    { "type": "text", "id": "heart", "label": "Heart notes", "default": "Magnolia, orris" },
+    { "type": "text", "id": "base", "label": "Base notes", "default": "Amber, oud, soft leather" }
+  ],
+  "presets": [{ "name": "Scent spotlight" }]
+}
+{% endschema %}

@@ -1,0 +1,89 @@
+{
+  "sections": {
+    "hero": {
+      "type": "image-banner",
+      "settings": {
+        "sample_photo": true,
+        "height": "large",
+        "position": "left",
+        "overlay": 60,
+        "heading": "Scent, undiluted",
+        "text": "Fragrance oils at 98% concentration. Composed to linger from first light to last call.",
+        "button_label": "Explore"
+      }
+    },
+    "best-sellers": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Best sellers",
+        "limit": 4,
+        "columns": 4,
+        "button_label": "Shop all scents"
+      }
+    },
+    "spotlight": {
+      "type": "scent-spotlight",
+      "settings": {}
+    },
+    "collections": {
+      "type": "collection-list",
+      "settings": {
+        "heading": "Featured collections"
+      },
+      "blocks": {
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "title": "The Signature Collection"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "title": "Discovery Sets"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "title": "Gift Sets"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ]
+    },
+    "gifts": {
+      "type": "image-with-text",
+      "settings": {
+        "heading": "Gift sets",
+        "subheading": "All in one box",
+        "button_label": "Check now"
+      }
+    },
+    "house": {
+      "type": "image-banner",
+      "settings": {
+        "sample_photo": false,
+        "height": "medium",
+        "width": "contained",
+        "position": "bottom",
+        "eyebrow": "Our story",
+        "heading": "The House of Enzo",
+        "text": "Every bottle begins as a single idea — a memory, a place, a person — rendered in oil at 98% strength.",
+        "button_label": "Explore"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "best-sellers",
+    "spotlight",
+    "collections",
+    "gifts",
+    "house"
+  ]
+}

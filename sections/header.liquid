@@ -1,0 +1,117 @@
+{%- assign menu = section.settings.menu -%}
+<header class="header{% if section.settings.overlay and template.name == 'index' %} header--overlay{% endif %}">
+  <div class="header__bar container">
+    <div class="header__left">
+      <details class="menu-drawer mobile-only">
+        <summary class="icon-btn" aria-label="Menu">
+          <span class="i-menu">{% render 'icon', name: 'menu' %}</span>
+          <span class="i-close">{% render 'icon', name: 'close' %}</span>
+        </summary>
+        <nav class="menu-drawer__panel" aria-label="Mobile">
+          <ul>
+            {%- for link in menu.links -%}
+              <li>
+                {%- if link.links != blank -%}
+                  <details>
+                    <summary>{{ link.title }} {% render 'icon', name: 'chevron' %}</summary>
+                    <ul>
+                      <li><a href="{{ link.url }}">View all</a></li>
+                      {%- for child in link.links -%}
+                        <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                {%- else -%}
+                  <a href="{{ link.url }}">{{ link.title }}</a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+          <div class="menu-drawer__foot">
+            {%- if shop.customer_accounts_enabled -%}
+              <a href="{{ routes.account_url }}">{% if customer %}My account{% else %}Sign in{% endif %}</a>
+            {%- endif -%}
+            <a href="{{ routes.search_url }}">Search</a>
+          </div>
+        </nav>
+      </details>
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="icon-btn desktop-only" href="{{ routes.account_url }}" aria-label="Account">{% render 'icon', name: 'account' %}</a>
+      {%- endif -%}
+      <details class="search">
+        <summary class="icon-btn" aria-label="Search">{% render 'icon', name: 'search' %}</summary>
+        <div class="search__panel">
+          <form action="{{ routes.search_url }}" method="get" role="search">
+            <label class="visually-hidden" for="HeaderSearch">Search</label>
+            <input class="field" id="HeaderSearch" type="search" name="q" placeholder="Search scents…" value="{{ search.terms | escape }}">
+            <input type="hidden" name="type" value="product">
+            <button class="btn" type="submit">Search</button>
+          </form>
+        </div>
+      </details>
+    </div>
+
+    {%- capture logo_tag -%}
+      {%- if request.page_type == 'index' -%}h1{%- else -%}div{%- endif -%}
+    {%- endcapture -%}
+    <{{ logo_tag }} class="header__brand">
+      <a class="header__logo" href="{{ routes.root_url }}">
+        {%- if settings.logo -%}
+          {{ settings.logo | image_url: width: 520 | image_tag: widths: '260, 520', sizes: '260px', alt: shop.name }}
+        {%- else -%}
+          <span class="wordmark">Enzo<small>Scents</small></span>
+          <span class="visually-hidden">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </{{ logo_tag }}>
+
+    <div class="header__right">
+      <a class="icon-btn" href="{{ routes.cart_url }}" aria-label="Bag" data-cart-open>
+        {%- render 'icon', name: 'cart' -%}
+        <span class="cart-count" data-cart-count aria-live="polite">{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="header__nav desktop-only" aria-label="Primary">
+    <ul class="nav">
+      {%- for link in menu.links -%}
+        <li class="nav__item">
+          <a class="nav__link{% if link.child_active or link.active %} is-active{% endif %}" href="{{ link.url }}">
+            {{- link.title -}}
+            {%- if link.links != blank %}{% render 'icon', name: 'chevron' %}{% endif -%}
+          </a>
+          {%- if link.links != blank -%}
+            <div class="nav__dropdown">
+              <ul>
+                {%- for child in link.links -%}
+                  <li>
+                    <a href="{{ child.url }}">{{ child.title }}</a>
+                    {%- if child.links != blank -%}
+                      <ul>
+                        {%- for grandchild in child.links -%}
+                          <li><a href="{{ grandchild.url }}">{{ grandchild.title }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "overlay", "label": "Transparent over homepage hero", "default": true }
+  ]
+}
+{% endschema %}

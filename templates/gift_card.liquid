@@ -1,0 +1,37 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Your {{ gift_card.initial_value | money }} gift card – {{ shop.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+      :root { --ink: {{ settings.color_ink }}; --ivory: {{ settings.color_ivory }}; --cream: {{ settings.color_cream }}; --gold: {{ settings.color_gold }}; }
+    </style>
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body>
+    <main class="password">
+      <div class="password__inner label-frame">
+        <img src="{{ 'enzo-logo.png' | asset_url }}" width="474" height="474" alt="{{ shop.name }}">
+        <p class="eyebrow" style="color: var(--gold)">Gift card</p>
+        <p class="display" style="margin-top: 16px">{{ gift_card.balance | money }}</p>
+        {%- if gift_card.enabled == false or gift_card.expired -%}
+          <p class="form-error" style="margin-top: 12px">This gift card is no longer active.</p>
+        {%- elsif gift_card.expires_on -%}
+          <p style="margin-top: 12px">Valid until {{ gift_card.expires_on | date: '%B %e, %Y' }}</p>
+        {%- endif -%}
+        <p style="margin-top: 28px; font-size: 20px; letter-spacing: .2em">{{ gift_card.code | format_code }}</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px">
+          <a class="btn btn--gold" href="{{ shop.url }}">Shop now</a>
+          <button class="btn btn--ghost" type="button" onclick="window.print()">Print</button>
+        </div>
+        {%- if gift_card.pass_url -%}
+          <p style="margin-top: 24px"><a href="{{ gift_card.pass_url }}">Add to Apple Wallet</a></p>
+        {%- endif -%}
+      </div>
+    </main>
+  </body>
+</html>

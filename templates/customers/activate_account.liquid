@@ -1,0 +1,9 @@
+<div class="container container--narrow account">
+  <header class="page-head"><h1 class="heading-rule">Activate account</h1></header>
+  {%- form 'activate_customer_password', class: 'form-stack' -%}
+    {{ form.errors | default_errors }}
+    <label>Password<input class="field" type="password" name="customer[password]" autocomplete="new-password" required></label>
+    <label>Confirm password<input class="field" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></label>
+    <p style="display: flex; gap: 12px"><button class="btn" type="submit">Activate</button><button class="btn btn--ghost" type="submit" name="decline">Decline</button></p>
+  {%- endform -%}
+</div>
