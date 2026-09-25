@@ -107,7 +107,7 @@
       "type": "featured-collection",
       "settings": {
         "heading": "Best sellers",
-        "collection": "",
+        "collection": "enzo",
         "limit": 4,
         "columns": 4,
         "button_label": "Shop all scents"
@@ -172,14 +172,73 @@
     },
     "house": {
       "type": "image-banner",
+      "blocks": {
+        "text_FqztTa": {
+          "type": "text",
+          "settings": {
+            "text": "Scents also available",
+            "tag": "p",
+            "font": "serif",
+            "custom_font": "assistant_n4",
+            "size": 56,
+            "size_mobile": 34,
+            "weight": "500",
+            "italic": false,
+            "uppercase": false,
+            "letter_spacing": 2,
+            "line_height": 110,
+            "space_above": 16,
+            "color": "#faf8f4",
+            "gradient": ""
+          }
+        },
+        "text_XawqwN": {
+          "type": "text",
+          "settings": {
+            "text": "in 100mL bottle",
+            "tag": "p",
+            "font": "serif",
+            "custom_font": "assistant_n4",
+            "size": 56,
+            "size_mobile": 34,
+            "weight": "500",
+            "italic": false,
+            "uppercase": false,
+            "letter_spacing": 2,
+            "line_height": 80,
+            "space_above": 0,
+            "color": "#C2A062",
+            "gradient": ""
+          }
+        },
+        "button_fTeUmf": {
+          "type": "button",
+          "settings": {
+            "label": "Shop now",
+            "link": "",
+            "style": "solid",
+            "bg": "#c2a062",
+            "fg": "#121110",
+            "bg_hover": "#faf8f4",
+            "fg_hover": "#121110",
+            "space_above": 36
+          }
+        }
+      },
+      "block_order": [
+        "text_FqztTa",
+        "text_XawqwN",
+        "button_fTeUmf"
+      ],
       "settings": {
+        "image": "shopify://shop_images/Replace_background_for_product_s__20260925165511.jpg",
         "sample_photo": false,
         "overlay": 55,
         "background": "#121110",
         "height": "medium",
         "width": "contained",
-        "position": "bottom",
-        "vertical": "middle",
+        "position": "left",
+        "vertical": "bottom",
         "text_align": "left",
         "content_width": 560,
         "mobile_layout": "overlay"
