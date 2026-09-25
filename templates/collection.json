@@ -1,4 +1,72 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
-  "sections": { "main": { "type": "main-collection", "settings": {} } },
-  "order": ["main"]
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "disabled": true,
+      "settings": {
+        "per_page": 16,
+        "columns": 4
+      }
+    },
+    "featured_collection_aKYQkq": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "heading": "Best sellers",
+        "collection": "",
+        "limit": 4,
+        "columns": 4,
+        "button_label": "Shop all scents"
+      }
+    },
+    "featured_collection_XwfbDQ": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "heading": "For him",
+        "collection": "",
+        "limit": 4,
+        "columns": 4,
+        "button_label": "Shop all scents"
+      }
+    },
+    "featured_collection_xmDfXb": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "heading": "For her",
+        "collection": "",
+        "limit": 4,
+        "columns": 4,
+        "button_label": "Shop all scents"
+      }
+    },
+    "featured_collection_7rPHgq": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "heading": "For all",
+        "collection": "",
+        "limit": 4,
+        "columns": 4,
+        "button_label": "Shop all scents"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "featured_collection_aKYQkq",
+    "featured_collection_XwfbDQ",
+    "featured_collection_xmDfXb",
+    "featured_collection_7rPHgq"
+  ]
 }
