@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
@@ -104,6 +113,7 @@
       "type": "featured-collection",
       "settings": {
         "heading": "Best sellers",
+        "collection": "",
         "limit": 4,
         "columns": 4,
         "button_label": "Shop all scents"
@@ -111,29 +121,37 @@
     },
     "spotlight": {
       "type": "scent-spotlight",
-      "settings": {}
+      "settings": {
+        "product": "",
+        "eyebrow": "Anatomy of a scent",
+        "fallback_title": "Scent Name",
+        "claim": "98% fragrance oil. Nothing to dilute it.",
+        "top": "Bergamot, pink pepper",
+        "heart": "Magnolia, orris",
+        "base": "Amber, oud, soft leather"
+      }
     },
     "collections": {
       "type": "collection-list",
-      "settings": {
-        "heading": "Featured collections"
-      },
       "blocks": {
         "c1": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "The Signature Collection"
           }
         },
         "c2": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "Discovery Sets"
           }
         },
         "c3": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "Gift Sets"
           }
         }
@@ -142,14 +160,20 @@
         "c1",
         "c2",
         "c3"
-      ]
+      ],
+      "settings": {
+        "heading": "Featured collections"
+      }
     },
     "gifts": {
       "type": "image-with-text",
       "settings": {
+        "reverse": false,
         "heading": "Gift sets",
         "subheading": "All in one box",
-        "button_label": "Check now"
+        "text": "<p>Signature scents presented in our black and gold box — ready to give, impossible to forget.</p>",
+        "button_label": "Check now",
+        "button_link": ""
       }
     },
     "house": {
