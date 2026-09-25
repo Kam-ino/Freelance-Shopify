@@ -195,33 +195,51 @@ textarea.field { height: auto; min-height: 140px; padding-block: 14px; resize: v
 
 /* ---------- Image banner / hero ---------- */
 .banner {
-  position: relative; isolation: isolate; overflow: hidden; display: grid;
+  position: relative; isolation: isolate; overflow: clip; display: grid;
   min-height: var(--banner-h, 560px); background: var(--ink); color: var(--ivory);
 }
 .banner--small { --banner-h: 440px; }
 .banner--large { --banner-h: max(620px, 82vh); }
 .banner--full { --banner-h: 100svh; }
+.banner--adapt { min-height: auto; aspect-ratio: var(--ratio); } /* grows past the ratio if the text needs room */
 .banner__media { position: absolute; inset: 0; z-index: -1; }
+.banner__media picture { display: contents; }
 .banner__media img { width: 100%; height: 100%; object-fit: cover; }
 .banner__media::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(90deg, rgb(12 10 8 / calc(var(--overlay, .55) * 1.25)), rgb(12 10 8 / var(--overlay, .55)) 34%, rgb(12 10 8 / .06) 70%);
 }
-.banner--center .banner__media::after { background: rgb(12 10 8 / calc(var(--overlay, .55) * .75)); }
+.banner--pos-right .banner__media::after { background: linear-gradient(270deg, rgb(12 10 8 / calc(var(--overlay, .55) * 1.25)), rgb(12 10 8 / var(--overlay, .55)) 34%, rgb(12 10 8 / .06) 70%); }
+.banner--pos-center .banner__media::after { background: rgb(12 10 8 / calc(var(--overlay, .55) * .75)); }
 .banner__content { align-self: center; padding-block: 64px; }
-.banner__inner { max-width: 560px; }
-.banner--center .banner__inner { max-width: 720px; margin-inline: auto; text-align: center; }
-.banner--bottom .banner__content { align-self: end; padding-bottom: clamp(32px, 4vw, 56px); }
+.banner--v-top .banner__content { align-self: start; }
+.banner--v-bottom .banner__content { align-self: end; padding-bottom: clamp(32px, 4vw, 56px); }
 .template-index main > .shopify-section:first-child .banner__content { padding-top: calc(var(--header-h) + 48px); }
-.banner__title { font-size: clamp(44px, 6.4vw, 92px); text-transform: uppercase; letter-spacing: .03em; }
-.banner__text { margin-top: 20px; max-width: 44ch; font-size: clamp(15px, 1.2vw, 17px); color: color-mix(in srgb, var(--ivory) 82%, transparent); }
-.banner--center .banner__text { margin-inline: auto; }
-.banner__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
-.banner--center .banner__actions { justify-content: center; }
-.banner .eyebrow { color: var(--gold); margin-bottom: 20px; }
+.banner__inner { display: flex; flex-wrap: wrap; align-items: center; column-gap: 12px; max-width: var(--content-w, 560px); }
+.banner--pos-center .banner__inner { margin-inline: auto; }
+.banner--pos-right .banner__inner { margin-left: auto; }
+/* Per-block type: scales fluidly from the mobile size up to the desktop size at 1440px */
+.banner__line { flex-basis: 100%; margin: 0; font-size: clamp(var(--fs-m), calc(var(--fs-n) * 100vw / 1440), var(--fs)); }
+.banner__line.is-italic { font-style: italic; }
+.banner__line.is-upper { text-transform: uppercase; }
+.banner__line.has-gradient > span {
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-inline-end: .08em; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.banner__btn { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); }
+.banner__btn--outline { background: transparent; border-color: var(--btn-fg); }
+.banner__btn:hover { background: var(--btn-bg-h); border-color: var(--btn-bg-h); color: var(--btn-fg-h); }
 .banner--contained { width: min(100% - 2 * var(--gutter), var(--page)); margin-inline: auto; }
 .banner--contained .banner__content { padding-inline: clamp(24px, 4vw, 56px); }
 .banner--label .banner__content { padding-inline: clamp(32px, 6vw, 96px); }
+@media (max-width: 749px) {
+  .banner--stack { display: block; min-height: 0; aspect-ratio: auto; }
+  .banner--stack .banner__media { position: relative; z-index: 0; aspect-ratio: var(--ratio-m); overflow: hidden; }
+  .banner--stack .banner__media::after { display: none; }
+  .banner--stack .banner__content,
+  .template-index main > .shopify-section:first-child .banner--stack .banner__content { padding-block: 40px 56px; }
+  .template-index main > .shopify-section:first-child .banner--stack { padding-top: var(--header-h); }
+}
 @media (prefers-reduced-motion: no-preference) {
   main > .shopify-section:first-child .banner__media img { animation: settle 2.4s var(--ease) both; }
   @keyframes settle { from { scale: 1.08; } }

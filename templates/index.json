@@ -3,14 +3,102 @@
     "hero": {
       "type": "image-banner",
       "settings": {
-        "sample_photo": true,
-        "height": "large",
+        "sample_photo": false,
+        "overlay": 0,
+        "background": "#3A1417",
+        "height": "adapt",
+        "width": "full",
         "position": "left",
-        "overlay": 60,
-        "heading": "Scent, undiluted",
-        "text": "Fragrance oils at 98% concentration. Composed to linger from first light to last call.",
-        "button_label": "Explore"
-      }
+        "vertical": "middle",
+        "text_align": "center",
+        "content_width": 640,
+        "mobile_layout": "stack"
+      },
+      "blocks": {
+        "headline": {
+          "type": "text",
+          "settings": {
+            "text": "The new\nIdole arrives.",
+            "tag": "h2",
+            "font": "serif",
+            "size": 80,
+            "size_mobile": 38,
+            "weight": "600",
+            "uppercase": true,
+            "letter_spacing": 1,
+            "line_height": 95,
+            "space_above": 0,
+            "color": "#FAF6F2"
+          }
+        },
+        "subheading": {
+          "type": "text",
+          "settings": {
+            "text": "A Timeless Masterpiece.",
+            "tag": "p",
+            "font": "serif",
+            "size": 38,
+            "size_mobile": 22,
+            "weight": "500",
+            "letter_spacing": 1,
+            "line_height": 120,
+            "space_above": 24,
+            "color": "#FAF6F2"
+          }
+        },
+        "name": {
+          "type": "text",
+          "settings": {
+            "text": "Idole",
+            "tag": "p",
+            "font": "serif",
+            "size": 100,
+            "size_mobile": 56,
+            "weight": "500",
+            "italic": true,
+            "uppercase": true,
+            "letter_spacing": 2,
+            "line_height": 100,
+            "space_above": 28,
+            "color": "#F3C3B7",
+            "gradient": "linear-gradient(100deg, #C8938D 0%, #F3C3B7 45%, #E1A99C 72%, #C8938D 100%)"
+          }
+        },
+        "body": {
+          "type": "text",
+          "settings": {
+            "text": "The Brand’s Newest and Most\nAnticipated Fragrance Release.",
+            "tag": "p",
+            "font": "serif",
+            "size": 32,
+            "size_mobile": 19,
+            "weight": "500",
+            "letter_spacing": 0,
+            "line_height": 118,
+            "space_above": 20,
+            "color": "#FAF6F2"
+          }
+        },
+        "cta": {
+          "type": "button",
+          "settings": {
+            "label": "Discover Idole",
+            "style": "solid",
+            "bg": "#C2A062",
+            "fg": "#121110",
+            "bg_hover": "#FAF8F4",
+            "fg_hover": "#121110",
+            "space_above": 40
+          }
+        }
+      },
+      "block_order": [
+        "headline",
+        "subheading",
+        "name",
+        "body",
+        "cta"
+      ]
     },
     "best-sellers": {
       "type": "featured-collection",
@@ -68,14 +156,83 @@
       "type": "image-banner",
       "settings": {
         "sample_photo": false,
+        "overlay": 55,
+        "background": "#121110",
         "height": "medium",
         "width": "contained",
-        "position": "bottom",
-        "eyebrow": "Our story",
-        "heading": "The House of Enzo",
-        "text": "Every bottle begins as a single idea — a memory, a place, a person — rendered in oil at 98% strength.",
-        "button_label": "Explore"
-      }
+        "position": "left",
+        "vertical": "bottom",
+        "text_align": "left",
+        "content_width": 560,
+        "mobile_layout": "overlay"
+      },
+      "blocks": {
+        "eyebrow": {
+          "type": "text",
+          "settings": {
+            "text": "Our story",
+            "tag": "p",
+            "font": "sans",
+            "size": 11,
+            "size_mobile": 11,
+            "weight": "500",
+            "uppercase": true,
+            "letter_spacing": 26,
+            "line_height": 150,
+            "space_above": 0,
+            "color": "#C2A062"
+          }
+        },
+        "heading": {
+          "type": "text",
+          "settings": {
+            "text": "The House of Enzo",
+            "tag": "h2",
+            "font": "serif",
+            "size": 84,
+            "size_mobile": 44,
+            "weight": "500",
+            "uppercase": true,
+            "letter_spacing": 3,
+            "line_height": 104,
+            "space_above": 20,
+            "color": "#FAF8F4"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "Every bottle begins as a single idea — a memory, a place, a person — rendered in oil.",
+            "tag": "p",
+            "font": "sans",
+            "size": 17,
+            "size_mobile": 15,
+            "weight": "300",
+            "letter_spacing": 1,
+            "line_height": 160,
+            "space_above": 20,
+            "color": "#D9D4CC"
+          }
+        },
+        "cta": {
+          "type": "button",
+          "settings": {
+            "label": "Explore",
+            "style": "solid",
+            "bg": "#C2A062",
+            "fg": "#121110",
+            "bg_hover": "#FAF8F4",
+            "fg_hover": "#121110",
+            "space_above": 36
+          }
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "heading",
+        "text",
+        "cta"
+      ]
     }
   },
   "order": [

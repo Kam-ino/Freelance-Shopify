@@ -12,7 +12,7 @@ Connect this branch via **Online Store → Themes → Add theme → Connect from
    | Key | Type | Used for |
    |---|---|---|
    | `subtitle` | Single line text | Line under the title on cards and product pages, e.g. "Extrait de Parfum". Falls back to the product type |
-   | `tagline` | Single line text | Line under the product title. Falls back to the section default "98% fragrance oil · natural spray" |
+   | `tagline` | Single line text | Line under the product title. Set the concentration here per product, e.g. "30% fragrance oil · natural spray" |
    | `top_notes`, `heart_notes`, `base_notes` | Single line text (or list) | Fragrance notes on the product page and in the Scent spotlight section |
 3. **Homepage:** in the theme editor, pick a collection for *Best sellers*, a product for *Scent spotlight*, and collections for *Featured collections*. Upload a hero image of at least 2400px. The bundled sample photo is 900px and only a placeholder.
 4. **Theme settings → Cart:** set the free-shipping threshold (default 150, in shop currency).

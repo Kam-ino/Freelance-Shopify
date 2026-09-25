@@ -1,44 +1,84 @@
 {%- liquid
   assign s = section.settings
+  assign img = s.image
   assign is_first = false
   if section.index == 1
     assign is_first = true
   endif
   assign has_image = false
-  if s.image != blank or s.sample_photo
+  if img != blank or s.sample_photo
     assign has_image = true
   endif
+  assign ratio = 1.78
+  if img != blank
+    assign ratio = img.aspect_ratio
+  endif
+  assign ratio_m = s.image_mobile.aspect_ratio | default: ratio
+  assign justify = s.text_align | replace: 'left', 'flex-start' | replace: 'right', 'flex-end'
 -%}
-<div class="banner banner--{{ s.height }} banner--{{ s.position }}{% if s.width == 'contained' %} banner--contained{% endif %}{% unless has_image %} banner--label label-frame{% endunless %}" style="--overlay: {{ s.overlay | divided_by: 100.0 }}">
+<div
+  class="banner banner--{{ s.height }} banner--pos-{{ s.position }} banner--v-{{ s.vertical }}{% if s.width == 'contained' %} banner--contained{% endif %}{% if s.mobile_layout == 'stack' %} banner--stack{% endif %}{% unless has_image %} banner--label label-frame{% endunless %}"
+  style="--overlay: {{ s.overlay | divided_by: 100.0 }}; --ratio: {{ ratio }}; --ratio-m: {{ ratio_m }}; background-color: {{ s.background }}"
+>
   {%- if has_image -%}
     <div class="banner__media">
-      {%- if s.image != blank -%}
-        {%- assign focal = 'object-position: ' | append: s.image.presentation.focal_point -%}
-        {%- if is_first -%}
-          {{ s.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1800, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', style: focal }}
-        {%- else -%}
-          {{ s.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1800, 2400', sizes: '100vw', loading: 'lazy', style: focal }}
-        {%- endif -%}
+      {%- if img != blank -%}
+        {%- liquid
+          assign focal = 'object-position: ' | append: img.presentation.focal_point
+          assign loading = 'lazy'
+          assign priority = 'auto'
+          if is_first
+            assign loading = 'eager'
+            assign priority = 'high'
+          endif
+        -%}
+        <picture>
+          {%- if s.image_mobile != blank -%}
+            <source media="(max-width: 749px)" sizes="100vw" srcset="{{ s.image_mobile | image_url: width: 750 }} 750w, {{ s.image_mobile | image_url: width: 1100 }} 1100w, {{ s.image_mobile | image_url: width: 1500 }} 1500w">
+          {%- endif -%}
+          {{ img | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1800, 2400', sizes: '100vw', loading: loading, fetchpriority: priority, style: focal }}
+        </picture>
       {%- else -%}
         <img src="{{ 'enzo-lifestyle.jpg' | asset_url }}" width="900" height="900" alt="" {% if is_first %}fetchpriority="high"{% else %}loading="lazy"{% endif %} style="object-position: 50% 58%">
       {%- endif -%}
     </div>
   {%- endif -%}
-  <div class="banner__content{% unless s.width == 'contained' %} container{% endunless %}"><div class="banner__inner">
-    {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
-    {%- if s.heading != blank -%}<h2 class="banner__title">{{ s.heading }}</h2>{%- endif -%}
-    {%- if s.text != blank -%}<p class="banner__text">{{ s.text }}</p>{%- endif -%}
-    {%- if s.button_label != blank or s.button_label_2 != blank -%}
-      <div class="banner__actions">
-        {%- if s.button_label != blank -%}
-          <a class="btn btn--gold" href="{{ s.button_link | default: routes.all_products_collection_url }}">{{ s.button_label }}</a>
-        {%- endif -%}
-        {%- if s.button_label_2 != blank -%}
-          <a class="btn btn--ghost" href="{{ s.button_link_2 | default: routes.root_url }}">{{ s.button_label_2 }}</a>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
-  </div></div>
+
+  <div class="banner__content{% unless s.width == 'contained' %} container{% endunless %}">
+    <div class="banner__inner" style="--content-w: {{ s.content_width }}px; text-align: {{ s.text_align }}; justify-content: {{ justify }}">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        {%- case block.type -%}
+          {%- when 'text' -%}
+            {%- liquid
+              assign family = 'var(--serif)'
+              if b.font == 'sans'
+                assign family = 'var(--sans)'
+              elsif b.font == 'custom'
+                assign f = b.custom_font | font_modify: 'weight', b.weight | default: b.custom_font
+                if b.italic
+                  assign f = f | font_modify: 'style', 'italic' | default: f
+                endif
+                assign family = "'" | append: f.family | append: "', " | append: f.fallback_families
+              endif
+            -%}
+            {%- if b.font == 'custom' -%}<style>{{ f | font_face: font_display: 'swap' }}</style>{%- endif -%}
+            <{{ b.tag }}
+              class="banner__line{% if b.italic %} is-italic{% endif %}{% if b.uppercase %} is-upper{% endif %}{% if b.gradient != blank %} has-gradient{% endif %}"
+              style="font-family: {{ family }}; font-weight: {{ b.weight }}; --fs: {{ b.size }}px; --fs-n: {{ b.size }}; --fs-m: {{ b.size_mobile }}px; letter-spacing: {{ b.letter_spacing | divided_by: 100.0 }}em; line-height: {{ b.line_height | divided_by: 100.0 }}; margin-top: {{ b.space_above }}px; color: {{ b.color }};{% if b.gradient != blank %} --grad: {{ b.gradient }};{% endif %}"
+              {{ block.shopify_attributes }}
+            ><span>{{ b.text | escape | newline_to_br }}</span></{{ b.tag }}>
+          {%- when 'button' -%}
+            <a
+              class="btn banner__btn{% if b.style == 'outline' %} banner__btn--outline{% endif %}"
+              href="{{ b.link | default: routes.all_products_collection_url }}"
+              style="--btn-bg: {{ b.bg }}; --btn-fg: {{ b.fg }}; --btn-bg-h: {{ b.bg_hover }}; --btn-fg-h: {{ b.fg_hover }}; margin-top: {{ b.space_above }}px"
+              {{ block.shopify_attributes }}
+            >{{ b.label | escape }}</a>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
 </div>
 
 {% schema %}
@@ -47,11 +87,14 @@
   "tag": "section",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Mobile image", "info": "Optional. Shown on screens under 750px." },
     { "type": "checkbox", "id": "sample_photo", "label": "Use sample brand photo when no image is selected", "default": false },
     { "type": "range", "id": "overlay", "label": "Image overlay", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 55 },
+    { "type": "color", "id": "background", "label": "Background color", "info": "Shown behind the text when there is no image, or when text sits below the image on mobile.", "default": "#121110" },
     {
       "type": "select", "id": "height", "label": "Height", "default": "large",
       "options": [
+        { "value": "adapt", "label": "Adapt to image" },
         { "value": "small", "label": "Small" },
         { "value": "medium", "label": "Medium" },
         { "value": "large", "label": "Large" },
@@ -65,22 +108,117 @@
         { "value": "contained", "label": "Contained" }
       ]
     },
+    { "type": "header", "content": "Content" },
     {
-      "type": "select", "id": "position", "label": "Text position", "default": "left",
+      "type": "select", "id": "position", "label": "Horizontal position", "default": "left",
       "options": [
-        { "value": "left", "label": "Middle left" },
-        { "value": "bottom", "label": "Bottom left" },
-        { "value": "center", "label": "Center" }
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
       ]
     },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Scent, undiluted" },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Fragrance oils at 98% concentration. Composed to linger from first light to last call." },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Explore" },
-    { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "text", "id": "button_label_2", "label": "Second button label" },
-    { "type": "url", "id": "button_link_2", "label": "Second button link" }
+    {
+      "type": "select", "id": "vertical", "label": "Vertical position", "default": "middle",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "middle", "label": "Middle" },
+        { "value": "bottom", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "select", "id": "text_align", "label": "Text alignment", "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    { "type": "range", "id": "content_width", "label": "Content width", "min": 320, "max": 1000, "step": 20, "unit": "px", "default": 560 },
+    {
+      "type": "select", "id": "mobile_layout", "label": "Mobile layout", "default": "overlay",
+      "options": [
+        { "value": "overlay", "label": "Text over image" },
+        { "value": "stack", "label": "Text below image" }
+      ]
+    }
   ],
-  "presets": [{ "name": "Image banner" }]
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Text", "info": "Press Enter to force a line break.", "default": "Your headline" },
+        {
+          "type": "select", "id": "tag", "label": "HTML tag", "default": "p",
+          "options": [
+            { "value": "h2", "label": "Heading (H2)" },
+            { "value": "h3", "label": "Subheading (H3)" },
+            { "value": "p", "label": "Paragraph" }
+          ]
+        },
+        { "type": "header", "content": "Typography" },
+        {
+          "type": "select", "id": "font", "label": "Font", "default": "serif",
+          "options": [
+            { "value": "serif", "label": "Cormorant Garamond (serif)" },
+            { "value": "sans", "label": "Jost (sans-serif)" },
+            { "value": "custom", "label": "Custom font" }
+          ]
+        },
+        { "type": "font_picker", "id": "custom_font", "label": "Custom font", "info": "Used when Font is set to Custom font.", "default": "assistant_n4" },
+        { "type": "range", "id": "size", "label": "Size (desktop)", "min": 10, "max": 110, "step": 1, "unit": "px", "default": 56 },
+        { "type": "range", "id": "size_mobile", "label": "Size (mobile)", "min": 10, "max": 72, "step": 1, "unit": "px", "default": 34 },
+        {
+          "type": "select", "id": "weight", "label": "Weight", "default": "500",
+          "options": [
+            { "value": "300", "label": "Light" },
+            { "value": "400", "label": "Regular" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Semibold" },
+            { "value": "700", "label": "Bold" }
+          ]
+        },
+        { "type": "checkbox", "id": "italic", "label": "Italic", "default": false },
+        { "type": "checkbox", "id": "uppercase", "label": "Uppercase", "default": false },
+        { "type": "range", "id": "letter_spacing", "label": "Letter spacing", "min": -5, "max": 40, "step": 1, "unit": "%", "default": 2 },
+        { "type": "range", "id": "line_height", "label": "Line height", "min": 80, "max": 180, "step": 5, "unit": "%", "default": 110 },
+        { "type": "range", "id": "space_above", "label": "Space above", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 16 },
+        { "type": "header", "content": "Color" },
+        { "type": "color", "id": "color", "label": "Text color", "default": "#FAF8F4" },
+        { "type": "color_background", "id": "gradient", "label": "Text gradient", "info": "Optional. Overrides the text color, e.g. linear-gradient(100deg, #C8938D, #F3C3B7 45%, #C8938D) for rose gold." }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shop now" },
+        { "type": "url", "id": "link", "label": "Link" },
+        {
+          "type": "select", "id": "style", "label": "Style", "default": "solid",
+          "options": [
+            { "value": "solid", "label": "Solid" },
+            { "value": "outline", "label": "Outline" }
+          ]
+        },
+        { "type": "color", "id": "bg", "label": "Background", "default": "#C2A062" },
+        { "type": "color", "id": "fg", "label": "Text", "default": "#121110" },
+        { "type": "color", "id": "bg_hover", "label": "Hover background", "default": "#FAF8F4" },
+        { "type": "color", "id": "fg_hover", "label": "Hover text", "default": "#121110" },
+        { "type": "range", "id": "space_above", "label": "Space above", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 36 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image banner",
+      "blocks": [
+        { "type": "text", "settings": { "text": "Your headline", "tag": "h2", "uppercase": true, "space_above": 0 } },
+        { "type": "text", "settings": { "text": "Tell the story behind the scent.", "font": "sans", "size": 17, "size_mobile": 15, "weight": "300", "letter_spacing": 1, "line_height": 160, "space_above": 20 } },
+        { "type": "button", "settings": { "label": "Explore" } }
+      ]
+    }
+  ]
 }
 {% endschema %}
